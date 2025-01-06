@@ -9,9 +9,6 @@ build-type:         Simple
 
 executable example1
     main-is:          Main.hs
-    build-depends:    base, example1
+    build-depends:    base
     hs-source-dirs:   app
     default-language: GHC2024
-
-library 
-    js-sources: install_handler.js
