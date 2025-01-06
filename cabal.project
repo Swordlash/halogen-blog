@@ -1,0 +1,5 @@
+packages:
+  example1/
+
+with-compiler: javascript-unknown-ghcjs-ghc-9.12.1
+with-hc-pkg: javascript-unknown-ghcjs-ghc-pkg-9.12.1
