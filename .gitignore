@@ -3,3 +3,6 @@ dist-newstyle/
 node_modules/
 package-lock.json
 dev/index.js
+dev/index.js.br
+.parcel-cache/
+dist/*

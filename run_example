@@ -1,10 +1,4 @@
 #!/bin/sh
 set -ex
 
-export EXEC="example"$1
-
-cabal build $EXEC
-
-cp $(cabal exec which $EXEC)".jsexe/all.js" dev/index.js
-
-npx http-server dev/
+./example$1/run.sh

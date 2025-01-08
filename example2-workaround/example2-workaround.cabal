@@ -1,0 +1,25 @@
+cabal-version:      3.14
+name:               example2-workaround
+version:            0.1.0.0
+license:            MIT
+author:             Mateusz Goślinowski
+maintainer:         mateusz.goslinowski@gmail.com
+category:           Web
+build-type:         Simple
+
+common warnings
+    ghc-options: -Wall -Wcompat -Wincomplete-uni-patterns -Wincomplete-record-updates -Wredundant-constraints -Wmissing-home-modules -Wmissing-local-signatures -Wmissing-export-lists
+
+executable example2-workaround
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:    base, haskell-halogen-core, example2-workaround
+    hs-source-dirs:   app
+    default-language: GHC2024
+
+library
+    import:           warnings
+    exposed-modules:  Button
+    hs-source-dirs:   src
+    build-depends:    base, haskell-halogen-core, mtl, text
+    default-language: GHC2024

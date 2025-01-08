@@ -8,9 +8,8 @@ foreign import javascript unsafe
   " ((f) => { \
     \var node = document.createElement(\"button\"); \
     \node.textContent = \"Click me!\"; \
-    \node.onclick = function () { \
-    \  var result = f(); \
-    \  console.log(\"Clicked \" + result + \" times\"); \
+    \node.onclick = () => { \
+    \  node.textContent = `Clicked ${f()} times`; \
     \}; \
     \document.body.appendChild(node); \
   \})"
@@ -19,7 +18,6 @@ foreign import javascript unsafe
 main :: IO ()
 main = do
   ref <- newIORef 0
-
-  let incRef = toJSInt <$> atomicModifyIORef' ref (\x -> (x + 1, x + 1))
+  let incRef = toJSInt <$> (modifyIORef' ref (+1) *> readIORef ref)
 
   syncCallback' incRef >>= install_handler
