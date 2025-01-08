@@ -6,3 +6,5 @@ dev/index.js
 dev/index.js.br
 .parcel-cache/
 dist/*
+example2/assets/index.js
+example2-workaround/assets/index.js
