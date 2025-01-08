@@ -10,6 +10,7 @@ IN_EXT=$(cabal exec which $EXEC)".jsexe/all.externs.js"
 OUT="./dev/index.js"
 
 npx google-closure-compiler \
+  --language_in UNSTABLE \
   --compilation_level ADVANCED_OPTIMIZATIONS \
   --warning_level QUIET \
   --isolation_mode IIFE \
@@ -22,4 +23,4 @@ npx google-closure-compiler \
 echo "Input size: $(du -h $IN | cut -f1)"
 echo "Output size: $(du -h $OUT | cut -f1)"
 
-npx http-server ../dev/
+npx http-server dev/

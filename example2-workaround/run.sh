@@ -11,6 +11,7 @@ M_EXT="./example2-workaround/src/Button.externs.js"
 OUT="./example2-workaround/assets/index.js"
 
 npx google-closure-compiler \
+  --language_in UNSTABLE \
   --compilation_level ADVANCED_OPTIMIZATIONS \
   --warning_level QUIET \
   --isolation_mode IIFE \
