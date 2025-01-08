@@ -1,7 +1,8 @@
-# Case Study - Porting a PureScript framework to GHC
+# Case Study - Using foreign component library inside a Haskell application
 
 repo: https://github.com/Swordlash/halogen-blog
-preliminaries: javascript-unknown-ghcjs-ghc-9.12.1 (ghcup)
+
+ghc used: javascript-unknown-ghcjs-ghc-9.12.1 (ghcup)
 
 ## Preface
 
