@@ -395,3 +395,78 @@ Behold, a material button!
 <video width="320" height="240" controls>
   <source src="screenshots/material-button.mov" type="video/mp4">
 </video>
+
+### Bundling with `webpack` and `swc-loader`
+
+However, while the above trick works for standalone executables, it isn't really useful for libraries that have to ship with full code - haskell and javascript.
+Making downstream users to the to add separately-shipped externs and js files to their pipeline sounds like an unpleasant thing to do, and exposes
+them to too much implementation detail. Can we do better?
+
+The answer is - yes, if we ditch the closure compiler but use `swc` instead. [swc](https://swc.rs/) is a Rust-based platform used by a lot of tools like `Parser`, `Next.js` 
+or `Vercel`, and provides its own minifier pipeline with webpack plugin.
+
+What we have to do is, instead of installing our workaround and calling `google-closure-compiler`, add the following loader to our webpack file:
+```javascript
+// mateusz@m12844:~/personal/halogen-blog$ cat example2/assets/webpack.config.js
+
+module.exports = {
+  // no more Button here, `index.js` is just a copy of `all.js`
+  entry: ['./example2/assets/index.js', './example2/assets/style.scss'],
+  // (...)
+  module: {
+    rules: [
+      {
+        test: /\.s[ac]ss$/i,
+        use: [ "style-loader", "css-loader", "sass-loader"],
+      },
+      {
+        test: /\.m?js$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: "swc-loader"
+        }
+      }
+    ],
+  },
+  // (...)
+};
+
+// mateusz@m12844:~/personal/halogen-blog$ cat .swcrc
+{
+  "minify": true,
+  "jsc": {
+    "minify": {
+      "compress": true,
+      "mangle": true,
+      "sourceMap": false
+    }
+  }
+}
+```
+
+And voila! It all works as before. The uncompressed bundle size is slightly bigger (844 KiB vs 803 KiB with `google-closure-compiler`) however we don't need any more workarounds,
+and we can safely ship our foreign code with imports to our users (provided they do install our `npm` dependencies).
+
+A library with richer functionality is available [here](https://github.com/Swordlash/haskell-halogen-material).
+At the moment of writing, it contains Halogen components for customizable buttons, lists and tabbed panes.
+
+## Conclusion
+
+The above article shows how to use the JavaScript backend effectively and integrate it with foreign libraries, using `webpack` for bundling and `swc-loader` for minification/mangling.
+
+What's next? There is still a lot to do in terms of code size & performance, as well as integration with other tools:
+
+- This cabal [PR](https://github.com/haskell/cabal/pull/10722) adds a new pragma `js-options` that allows to pass custom flags to `js-sources` preprocessor.
+  Notably that would enable i.e. conditional compilation of traces along the lines of `#ifdef XXX <put-trace>` in foreign library code and `if flag(trace-flag) js-options: -optJSP-DXXX` in cabal file.
+- Low-hanging fruits like [adding multiline strings support to inline foreign imports](https://gitlab.haskell.org/ghc/ghc/-/issues/25633).
+- Bigger [integration efforts](https://gitlab.haskell.org/ghc/ghc/-/issues/25469) with npm.
+
+What is still a small unknown is deeper integration of the GHC build pipeline with `webpack` build pipeline, in the spirit of gathering `npm` libraries that need to be installed for each Haskell dependency, like `@material/button` in the above example. 
+I believe there will have to be a way of declaring inside the cabal package an `npm` dependency (something like the existing `pkgconfig-depends`) and
+a webpack plugin will be created for loading haskell package for bundling.
+
+Personally, I'm going to continue maintaining and developing the `haskell-halogen` and `haskell-halogen-material` libraries, adding more component classes to the latter.
+
+## Thanks!
+
+Many thanks to [Serge S. Gulin](https://github.com/GulinSS) for his help and discussions on Matrix channel, and to [Hécate Kleidukos](https://gitlab.haskell.org/Kleidukos) for inviting me to write this blog. I want also to thank [Sylvain Henry](https://gitlab.haskell.org/hsyl20) and [Luite Stegeman](https://gitlab.haskell.org/luite) for our mail and PR discussions, and whole IOG GHC Engineering team for the joint effort of releasing the JS backend. Awesome work!

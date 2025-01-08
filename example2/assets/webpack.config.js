@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: ['./example2-workaround/assets/index.js', './example2-workaround/assets/style.scss', './example2-workaround/src/Button.js'],
+  entry: ['./example2/assets/index.js', './example2/assets/style.scss'],
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, '../../dist'),
@@ -20,6 +20,13 @@ module.exports = {
       {
         test: /\.s[ac]ss$/i,
         use: [ "style-loader", "css-loader", "sass-loader"],
+      },
+      {
+        test: /\.m?js$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: "swc-loader"
+        }
       }
     ],
   },
