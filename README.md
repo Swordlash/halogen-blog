@@ -1,1 +1,1 @@
-See the [article](./blog.md)
+See the [article](https://blog.haskell.org/case-study-foreign-integration-js-browser/)
